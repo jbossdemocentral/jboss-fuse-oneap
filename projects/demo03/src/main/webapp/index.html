@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="US-ASCII">
+	<title>Camel CDI Currency Converter Demo</title>
+	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.15/angular.js"></script>
+	<script src="http://ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+   
+	<script>
+
+		// define angular module/app
+		var currencyapp = angular.module('currencyapp', []);   
+		currencyapp.controller('CurrencyListCtrl', function ($scope, $http) {
+		   $http.get('http://localhost:8080/demo03-0.0.1-SNAPSHOT/services/currenciesrest').success(function(data) {
+				$scope.currencies = data;
+		   }); 
+		});
+
+		var formapp = angular.module('formapp', []);   
+		formapp.controller('formContrl', function ($scope, $http) {
+			
+			console.log('formContrl called!'); 
+			
+			
+			// process the form
+		  $scope.processForm = function(amt,inputcurrency) {
+
+				formData = {
+					amt: amt,
+					currency: inputcurrency
+				};
+		      console.log(formData); 
+
+		      $http({
+		      method  : 'POST',
+		      url     : 'http://localhost:8080/demo03-0.0.1-SNAPSHOT/services/currency',
+		      data    : $.param(formData),   // pass in data as strings
+		      headers : { 'Content-Type': 'application/x-www-form-urlencoded' }  // set the headers so angular passing info as form data (not request payload)
+		     })
+		      .success(function(data) {
+		      	
+		      	console.log('amt:['+amt+']');
+		      	console.log('inputcurrency:['+inputcurrency+']');
+
+		        if (!data.success) {
+		        
+		      		$scope.message=data;
+		      		
+		        } else {
+		        	
+		          console.log(data);
+		      		$scope.message=data;
+		        }
+		      });
+		    };
+		});
+		
+angular.module("CombineModule", ["currencyapp", "formapp"]);
+	 	
+
+	</script>
+</head>
+<body ng-app="CombineModule" >
+<h1>This example demonstrate how to develop your camel application Using CDI and JavaDSL.</h1>
+
+
+<div ng-controller="formContrl" class="form-group" >
+<form name="myForm" ng-submit="processForm(amt,currency)" >
+<h2> Set amount to convert 
+<input type="number" name="amt" class="form-control" ng-model="amt" min="0" max="1000" required >
+<BR/>
+set currency <select name="currency" id="currency" class="form-control" ng-model="currency" required>
+      <option value="EUR" ng-selected="selected">Euro</option> 
+      <option value="GBP">British Pound</option>
+      <option value="INR">Indian Rupee</option>
+      <option value="AUD" >Australian Dollar</option>
+      <option value="CAD">Canadian Dollar</option>
+      <option value="SGD">Singapore Dollar</option>
+      <option value="CHF">Swiss Franc</option>
+      <option value="MYR">Malaysian Ringgit</option>
+      <option value="JPY">Japanese Yen</option>
+      <option value="CNY">Chinese Yuan Renminbi</option>
+      <option value="NZD">New Zealand Dollar</option>
+      <option value="BRL">Brazilian Real</option>
+    </select>
+
+<p>USD $ {{amt}} coverts to {{currency}} $ {{message}} </p></h2>
+
+	
+    <button type="submit" class="btn btn-success btn-lg btn-block">
+      <span class="glyphicon glyphicon-flash"></span> Submit!
+  </button>
+  
+	<BR/>   
+	</form> 
+
+
+</div>
+
+
+
+<h2>Exchange Currency List</h2>
+<div ng-controller="CurrencyListCtrl">
+<table border="1">
+  <tr ng-repeat="x in currencies">
+	<td>{{x.CURRENCYCODE}}</td>
+	<td>{{x.CURRENCYNAME}}</td>
+	<td>{{x.RATE}}</td></tr>
+</table>
+</div>
+
+
+
+</body>
+</html>

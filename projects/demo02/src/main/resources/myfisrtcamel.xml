@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<routes xmlns="http://camel.apache.org/schema/spring">
+	
+	    <restConfiguration component="servlet" bindingMode="json" contextPath="/camel">
+	      <dataFormatProperty key="prettyPrint" value="true"/>
+	    </restConfiguration>
+	    <rest path="/currenciesrest">
+		    <get uri="/">
+		      <to uri="direct:getCurrencies"/>
+		    </get>
+	    </rest>
+
+  <route id="allcurrencies">
+    <from uri="direct:getCurrencies"/>
+    <log message="starting direct:getCurrencies"/>
+    <to uri="sql:select * from currencyexchange?dataSource=java&#58;jboss/datasources/MyCamelDS"/>
+    <marshal>
+      <json library="Jackson"/>
+    </marshal>
+  </route>
+  
+  <route id="covertcurrency">
+	<from uri="direct:getCurrency"/>
+	<log message="Got currency: ${headers.amt} and amt: ${headers.currency}"/>
+	<choice>
+		<when>
+			<header>currency</header>
+	        <to uri="sql:select * from currencyexchange where currencycode= :#currency ?dataSource=java&#58;jboss/datasources/MyCamelDS"/>
+	        <log message="exchange rate ====&gt; ${body[0][rate]}"/>
+	        <bean ref="currencyconvertor" method="convertUSD(${headers.amt},${body})"/>
+	     </when>
+	     <otherwise>
+	        <log message="nothing to lookup"/>
+	        <transform>
+	          <constant>nothing to lookup</constant>
+	        </transform>
+	     </otherwise>
+	  </choice>
+	</route>
+	
+	<route id="servletCurrencies">
+		<from uri="servlet:/currencies?servletName=camel&amp;matchOnUriPrefix=true"/>
+	    <to uri="direct:getCurrencies"/>
+	</route>
+	<route id="servletCurrency">
+	    <from uri="servlet:/currency?servletName=camel&amp;matchOnUriPrefix=true"/>
+	    <to uri="direct:getCurrency"/>
+	</route>	
+</routes>
+<!-- END SNIPPET: e1 -->
