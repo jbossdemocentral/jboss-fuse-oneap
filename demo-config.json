@@ -1,0 +1,18 @@
+{
+  "name":"JBoss Fuse on EAP Demo",
+  "summary":"Sample code of how to do Camel application on EAP",
+  "author":"Christina Lin",
+  "categories":["fuse"],
+  "level":"Beginner",
+  "published":true,
+  "prerequisites":"Java 8 , Maven 3.1.1 - 3.2.4 ",
+  "targetProduct":"JBoss Fuse",
+  "productVersion":"JBoss Fuse 6.2.1",
+  "technologies": ["JBoss Fuse"],
+  "links": [ 
+    {
+      "name":"Code",
+      "url":"https://github.com/jbossdemocentral/jboss-fuse-oneap"
+    }
+  ]
+}
