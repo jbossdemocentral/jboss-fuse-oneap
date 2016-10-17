@@ -1,4 +1,4 @@
-#!/bin/sh 
+#!/bin/sh
 DEMO="JBoss Fuse on EAP Demo"
 
 #EAP Env
@@ -10,7 +10,7 @@ SRC_DIR=./installs
 PRJ_DIR=./projects
 SUPPORT_DIR=./support
 EAP=jboss-eap-6.4.0-installer.jar
-FUSE_EAP=fuse-eap-installer-6.2.1.redhat-039.jar
+FUSE_EAP=fuse-eap-installer-6.3.0.redhat-187.jar
 
 FUSE_VERSION=6.2.1
 AUTHORS="Christina Lin"
@@ -18,7 +18,7 @@ PROJECT="git@github.com/weimeilin79/fuseeapdemo.git"
 
 
 # wipe screen.
-clear 
+clear
 
 # add executeable in installs
 chmod +x installs/*.zip
@@ -26,34 +26,34 @@ chmod +x installs/*.zip
 
 echo
 echo "#################################################################"
-echo "##                                                             ##"   
+echo "##                                                             ##"
 echo "##  Setting up the ${DEMO}                      ##"
-echo "##                                                             ##"   
-echo "##                                                             ##"   
+echo "##                                                             ##"
+echo "##                                                             ##"
 echo "##                #####  #   #  #####  #####                   ##"
 echo "##                #      #   #  #      #                       ##"
 echo "##                #####  #   #  #####  ####                    ##"
 echo "##                #      #   #      #  #                       ##"
 echo "##                #      #####  #####  #####                   ##"
-echo "##                                                             ##"   
-echo "##                                                             ##"   
-echo "##  brought to you by,                                         ##"   
+echo "##                                                             ##"
+echo "##                                                             ##"
+echo "##  brought to you by,                                         ##"
 echo "##                    ${AUTHORS}                            ##"
-echo "##                                                             ##"   
+echo "##                                                             ##"
 echo "##  ${PROJECT}                 ##"
-echo "##                                                             ##"   
+echo "##                                                             ##"
 echo "#################################################################"
 echo
 
 # double check for maven.
 command -v mvn -q >/dev/null 2>&1 || { echo >&2 "Maven is required but not installed yet... aborting."; exit 1; }
 
-# make some checks first before proceeding.	
+# make some checks first before proceeding.
 if [ -r $SRC_DIR/$EAP ] || [ -L $SRC_DIR/$EAP ]; then
 	echo Product sources are present...
 	echo
 else
-	echo Need to download $EAP package from the Customer Portal 
+	echo Need to download $EAP package from the Customer Portal
 	echo and place it in the $SRC_DIR directory to proceed...
 	echo
 	exit
@@ -63,7 +63,7 @@ if [ -f $SRC_DIR/$FUSE_EAP ]; then
 	echo Fuse on Product sources are present...
 	echo
 else
-	echo Need to download $FUSE_EAP package from the Customer Portal 
+	echo Need to download $FUSE_EAP package from the Customer Portal
 	echo and place it in the $SRC_DIR directory to proceed...
 	echo
 	exit
@@ -111,7 +111,7 @@ echo Copy standalon.xml with datasource to destination
 mv $SERVER_CONF/standalone.xml $SERVER_CONF/standalone.xml.demobackup
 cp $SUPPORT_DIR/standalone.xml $SERVER_CONF/
 
-#Setup 
+#Setup
 echo setup currency exchange database
 if [ -x ~/h2 ]; then
 	rm -rf ~/h2/fuseoneap.h2.db
@@ -136,7 +136,7 @@ cd $PRJ_DIR/demo03
 mvn clean install
 cd ../..
 
-#Deploy Application to EAP 
+#Deploy Application to EAP
 cp $PRJ_DIR/demo01/target/demo01-0.0.1-SNAPSHOT.war $SERVER_DIR
 #cp $PRJ_DIR/demo02/target/demo02-0.0.1-SNAPSHOT.war $SERVER_DIR
 #cp $PRJ_DIR/demo03/target/demo03-0.0.1-SNAPSHOT.war $SERVER_DIR
